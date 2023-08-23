@@ -1,8 +1,11 @@
 provider "aws" {
-  region = "us-west-2"
+  region = "eu-west-2"
 }
 
-resource "aws_s3_bucket" "my_bucket" {
-  bucket = "my-tf-test-bucket"
-  acl    = "private"
+resource "aws_s3_bucket" "files_bucket" {
+  bucket = "terraformfiles-2"
+
+  tags = {
+    Name = "Final T Bucket"
+  }
 }

@@ -1,27 +1,13 @@
 provider "aws" {
-  region = "us-west-2"
+  region = "eu-west-2"
 }
 
-resource "aws_security_group" "allow_ssh_and_web" {
-  description = "Allow SSH and web traffic"
-
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+resource "aws_security_group" "allow_alb" {
+  vpc_id = aws_vpc.main.id
 
   ingress {
     from_port   = 80
     to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 443
-    to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -35,11 +21,13 @@ resource "aws_security_group" "allow_ssh_and_web" {
 }
 
 resource "aws_instance" "my_instance" {
-  ami                    = "ami-abc12345"
-  instance_type          = "t2.micro"
-  vpc_security_group_ids = [aws_security_group.allow_ssh_and_web.id]
+  ami           = "ami-0f3d9639a5674d559"
+  instance_type = "t2.micro"
+
+  vpc_security_group_ids = [aws_security_group.allow_alb.id]
+  subnet_id              = aws_subnet.main.id
 
   tags = {
-    Name = "my-instance-with-ssh-and-web"
+    Name = "my-instance"
   }
 }
